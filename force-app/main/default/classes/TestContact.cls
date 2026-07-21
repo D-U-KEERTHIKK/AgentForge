@@ -17,11 +17,11 @@ public class TestContact {
       insert testContact;
       Test.stopTest();
       
-      Assert.isNotNull(testContact.Id);
+      Assert.isNotNull(testContact.Id, 'Contact ID should not be null after insert');
       
       Contact retrievedContact = [SELECT Id, Email, Phone FROM Contact WHERE Id = :testContact.Id LIMIT 1];
-      Assert.areEqual('john.doe@example.com', retrievedContact.Email);
-      Assert.areEqual('555-0100', retrievedContact.Phone);
+      Assert.areEqual('john.doe@example.com', retrievedContact.Email, 'Email should match');
+      Assert.areEqual('555-0100', retrievedContact.Phone, 'Phone should match');
     }
   }
 
@@ -44,8 +44,8 @@ public class TestContact {
       Test.stopTest();
       
       Contact updatedContact = [SELECT Id, Phone, Email FROM Contact WHERE Id = :testContact.Id LIMIT 1];
-      Assert.areEqual('555-0200', updatedContact.Phone);
-      Assert.areEqual('jane.smith.updated@example.com', updatedContact.Email);
+      Assert.areEqual('555-0200', updatedContact.Phone, 'Phone should be updated');
+      Assert.areEqual('jane.smith.updated@example.com', updatedContact.Email, 'Email should be updated');
     }
   }
 
@@ -70,7 +70,7 @@ public class TestContact {
       Test.stopTest();
       
       List<Contact> queriedContacts = [SELECT Id, Email FROM Contact WHERE Email IN ('alice@example.com', 'bob@example.com') ORDER BY Email ASC];
-      Assert.areEqual(2, queriedContacts.size());
+      Assert.areEqual(2, queriedContacts.size(), 'Should return 2 contacts');
     }
   }
 
@@ -92,7 +92,7 @@ public class TestContact {
       Test.stopTest();
       
       List<Contact> deletedContacts = [SELECT Id FROM Contact WHERE Id = :contactId];
-      Assert.areEqual(0, deletedContacts.size());
+      Assert.areEqual(0, deletedContacts.size(), 'Contact should be deleted');
     }
   }
 
@@ -115,7 +115,7 @@ public class TestContact {
       Test.stopTest();
       
       List<Contact> insertedContacts = [SELECT Id FROM Contact WHERE Email LIKE 'bulk%@example.com'];
-      Assert.areEqual(100, insertedContacts.size());
+      Assert.areEqual(100, insertedContacts.size(), 'Should have inserted 100 contacts');
     }
   }
 
