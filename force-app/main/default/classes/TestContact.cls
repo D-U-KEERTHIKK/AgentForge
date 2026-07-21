@@ -11,7 +11,7 @@ private class TestContact {
             );
             insert c;
             
-            Assert.isNotNull(c.Id);
+            Assert.isNotNull(c.Id, 'Contact Id should not be null after insert');
         }
         Test.stopTest();
     }
@@ -30,7 +30,7 @@ private class TestContact {
             update c;
             
             Contact updated = [SELECT Email FROM Contact WHERE Id = :c.Id LIMIT 1];
-            Assert.areEqual('jane.updated@example.com', updated.Email);
+            Assert.areEqual('jane.updated@example.com', updated.Email, 'Email should be updated');
         }
         Test.stopTest();
     }
@@ -46,7 +46,7 @@ private class TestContact {
             insert c;
             
             Contact queried = [SELECT Id, Email FROM Contact WHERE Id = :c.Id LIMIT 1];
-            Assert.areEqual('bob.johnson@example.com', queried.Email);
+            Assert.areEqual('bob.johnson@example.com', queried.Email, 'Email should match queried contact');
         }
         Test.stopTest();
     }
@@ -65,7 +65,7 @@ private class TestContact {
             delete c;
             
             List<Contact> deleted = [SELECT Id FROM Contact WHERE Id = :contactId];
-            Assert.areEqual(0, deleted.size());
+            Assert.areEqual(0, deleted.size(), 'Contact should be deleted');
         }
         Test.stopTest();
     }
