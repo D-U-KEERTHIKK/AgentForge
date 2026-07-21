@@ -4,83 +4,90 @@ private class TestContact {
     @IsTest
     static void testInsertContact() {
         User testUser = createTestUser();
-        Test.startTest();
+        System.Test.startTest();
         System.runAs(testUser) {
             Contact c = new Contact(
-                Email = 'john.doe@example.com'
+                FirstName = 'John',
+                LastName = 'Doe',
+                Email = 'john.doe@example.com',
+                Phone = '1234567890'
             );
             insert c;
             
-            Assert.isNotNull(c.Id, 'Contact Id should not be null after insert');
+            Contact retrievedContact = [SELECT Id, FirstName, LastName FROM Contact WHERE Id = :c.Id];
+            System.assertNotEquals(null, retrievedContact);
+            System.assertEquals('John', retrievedContact.FirstName);
         }
-        Test.stopTest();
+        System.Test.stopTest();
     }
 
     @IsTest
     static void testUpdateContact() {
         User testUser = createTestUser();
-        Test.startTest();
+        System.Test.startTest();
         System.runAs(testUser) {
             Contact c = new Contact(
+                FirstName = 'Jane',
+                LastName = 'Smith',
                 Email = 'jane.smith@example.com'
             );
             insert c;
             
-            c.Email = 'jane.updated@example.com';
+            c.Phone = '9876543210';
             update c;
             
-            Contact updated = [SELECT Email FROM Contact WHERE Id = :c.Id LIMIT 1];
-            Assert.areEqual('jane.updated@example.com', updated.Email, 'Email should be updated');
+            Contact retrievedContact = [SELECT Id, Phone FROM Contact WHERE Id = :c.Id];
+            System.assertEquals('9876543210', retrievedContact.Phone);
         }
-        Test.stopTest();
-    }
-
-    @IsTest
-    static void testQueryContact() {
-        User testUser = createTestUser();
-        Test.startTest();
-        System.runAs(testUser) {
-            Contact c = new Contact(
-                Email = 'bob.johnson@example.com'
-            );
-            insert c;
-            
-            Contact queried = [SELECT Id, Email FROM Contact WHERE Id = :c.Id LIMIT 1];
-            Assert.areEqual('bob.johnson@example.com', queried.Email, 'Email should match queried contact');
-        }
-        Test.stopTest();
+        System.Test.stopTest();
     }
 
     @IsTest
     static void testDeleteContact() {
         User testUser = createTestUser();
-        Test.startTest();
+        System.Test.startTest();
         System.runAs(testUser) {
             Contact c = new Contact(
-                Email = 'alice.williams@example.com'
+                FirstName = 'Bob',
+                LastName = 'Johnson',
+                Email = 'bob.johnson@example.com'
             );
             insert c;
             Id contactId = c.Id;
             
             delete c;
             
-            List<Contact> deleted = [SELECT Id FROM Contact WHERE Id = :contactId];
-            Assert.areEqual(0, deleted.size(), 'Contact should be deleted');
+            List<Contact> deletedContacts = [SELECT Id FROM Contact WHERE Id = :contactId];
+            System.assertEquals(0, deletedContacts.size());
         }
-        Test.stopTest();
+        System.Test.stopTest();
+    }
+
+    @IsTest
+    static void testContactValidation() {
+        User testUser = createTestUser();
+        System.Test.startTest();
+        System.runAs(testUser) {
+            Contact c = new Contact(LastName = 'TestContact');
+            insert c;
+            
+            Contact retrievedContact = [SELECT Id, LastName FROM Contact WHERE Id = :c.Id];
+            System.assertNotEquals(null, retrievedContact.LastName);
+        }
+        System.Test.stopTest();
     }
 
     private static User createTestUser() {
-        Profile p = [SELECT Id FROM Profile WHERE Name = 'Standard User' LIMIT 1];
         User u = new User(
             Alias = 'testuser',
             Email = 'testuser@example.com',
             EmailEncodingKey = 'UTF-8',
+            LastName = 'Test',
             LanguageLocaleKey = 'en_US',
             LocaleSidKey = 'en_US',
-            ProfileId = p.Id,
+            ProfileId = [SELECT Id FROM Profile WHERE Name = 'Standard User' LIMIT 1].Id,
             TimeZoneSidKey = 'America/Los_Angeles',
-            Username = 'testuser' + Crypto.getRandomInteger() + '@example.com'
+            Username = 'testuser@example.com'
         );
         insert u;
         return u;
