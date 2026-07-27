@@ -1,0 +1,13 @@
+// ── Chorus.cmp ──
+<aura:component description="canvasly"
+implements="force:lightningQuickAction,force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes" access="global">
+<force:canvasApp developerName="AffectLayer_Notes" namespacePrefix="affectlayer"
+width="99%" scrolling="false" />
+</aura:component>
+
+// ── Chorus.cmp-meta.xml ──
+<?xml version="1.0" encoding="UTF-8"?>
+<AuraDefinitionBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>55.0</apiVersion>
+    <description>A Lightning Component Bundle</description>
+</AuraDefinitionBundle>
